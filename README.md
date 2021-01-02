@@ -21,8 +21,6 @@ ALIYUN-DDNS
 
 * 支持 Docker
 
-* 支持 IPV4/IPV6
-
 ## 前提
 
 * 域名在阿里云解析
@@ -33,9 +31,9 @@ ALIYUN-DDNS
 
 ## 直接部署
 
-* 从阿里云获取 [AccessKey AccessKeySecret](https://ak-console.aliyun.com/#/accesskey)
+* 从阿里云获取 [accessKey accessKeySecret](https://ak-console.aliyun.com/#/accesskey)
 
-* 克隆本项目 `git clone https://github.com/luoye-fe/aliyun-ddns.git`
+* 克隆本项目 `git clone https://github.com/lnkyan/aliyun-ddns.git`
 
 * 安装依赖 `npm install`
 
@@ -47,15 +45,15 @@ ALIYUN-DDNS
 
 * 配置文件说明
 
-  * AccessKey、AccessKeySecret: 阿里云 API 密钥
+  * accessKey、accessKeySecret: 阿里云 API 密钥
 
-  * Domain: 需 DDNS 的域名地址，多个域名使用数组即可，如
+  * Domain: 需 DDNS 的域名地址，多个域名使用逗号分隔即可，如
 
   ```json
   {
-    "AccessKey": "AccessKey",
-    "AccessKeySecret": "AccessKeySecret",
-    "Domain": "example.com"
+    "accessKey": "accessKey",
+    "accessKeySecret": "accessKeySecret",
+    "domain": "example.com"
   }
   ```
 
@@ -63,15 +61,15 @@ ALIYUN-DDNS
 
   ```json
   {
-    "AccessKey": "AccessKey",
-    "AccessKeySecret": "AccessKeySecret",
-    "Domain": ["sub.example.com", "*.home.example.com"]
+    "accessKey": "accessKey",
+    "accessKeySecret": "accessKeySecret",
+    "domain": "sub.example.com, *.home.example.com"
   }
   ```
 
 ## Docker 部署
 
-* 从阿里云获取 [AccessKey AccessKeySecret](https://ak-console.aliyun.com/#/accesskey)
+* 从阿里云获取 [accessKey accessKeySecret](https://ak-console.aliyun.com/#/accesskey)
 
 * 启动容器
 
@@ -79,9 +77,9 @@ ALIYUN-DDNS
 docker run -d \
   --name=aliyun-ddns \
   --restart=always \
-  -e AccessKey=Your_AccessKey \
-  -e AccessKeySecret=Your_AccessKeySecret \
-  -e Domain="sub.example.com,*.home.example.com" \ # 多个域名用英文逗号连接
+  -e accessKey=your_accessKey \
+  -e accessKeySecret=your_accessKeySecret \
+  -e domain="sub.example.com,*.home.example.com" \ # 多个域名用英文逗号连接
   --network=host
-  luoyefe/aliyun-ddns
+  lnkyan/aliyun-ddns
 ```

@@ -1,26 +1,24 @@
 {
   "name": "aliyun-ddns",
-  "version": "2.1.0",
+  "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js"
   },
-  "author": "luoyefe",
+  "author": "lnkyan",
   "license": "MIT",
   "dependencies": {
     "@alicloud/pop-core": "^1.7.9",
-    "axios": "^0.20.0",
-    "is-docker": "^2.1.1",
-    "ping": "^0.3.0",
-    "public-ip": "^4.0.2"
+    "axios": "^0.21.1",
+    "is-docker": "^2.1.1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/luoye-fe/aliyun-ddns.git"
+    "url": "git+https://github.com/lnkyan/aliyun-ddns.git"
   },
   "bugs": {
-    "url": "https://github.com/luoye-fe/aliyun-ddns/issues"
+    "url": "https://github.com/lnkyan/aliyun-ddns/issues"
   },
-  "homepage": "https://github.com/luoye-fe/aliyun-ddns#readme",
+  "homepage": "https://github.com/lnkyan/aliyun-ddns#readme",
   "description": "借助阿里云解析API实现DDNS"
 }

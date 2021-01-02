@@ -1,5 +1,6 @@
 {
-	"AccessKey": "AK",
-	"AccessKeySecret": "AS",
-	"Domain": "sub.example.com"
+	"accessKey": "AK",
+	"accessKeySecret": "AS",
+	"domain": "sub.example.com",
+    "interval": "60"
 }
