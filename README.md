@@ -80,3 +80,7 @@ docker run -d \
   -e webHook="https://webhook.example.com?text={msg}"
   lnkyan/aliyun-ddns
 ```
+
+## 开发
+
+* 开发完成后，增加一个`vx.x.x`形式的tag，提交后即会自动编译新的docker镜像
