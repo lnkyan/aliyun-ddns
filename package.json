@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "build-docker": "docker build -t lnkyan/aliyun-ddns ."
   },
   "author": "lnkyan",
   "license": "MIT",

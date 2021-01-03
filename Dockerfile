@@ -1,9 +1,21 @@
-FROM node:10.21.0-buster-slim
+FROM node:10.21.0-alpine
 
-WORKDIR /home/mapp
+# Create app directory
+WORKDIR /app
 
-COPY . /home/mapp
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
 
 RUN npm install --registry=https://registry.npm.taobao.org
+# If you are building your code for production
+# RUN npm ci --only=production
 
-CMD npm run start
+# Bundle app source
+COPY . .
+
+#EXPOSE 8080
+
+ENV accessKey=AK accessKeySecret=AS domain=sub.example.com interval=300 webHook="https://webhook.example.com?text={msg}"
+
+CMD ["npm", "start"]

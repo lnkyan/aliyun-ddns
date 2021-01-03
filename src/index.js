@@ -94,7 +94,7 @@ function getTime() {
 
 function notify(webHook, msg) {
     if (webHook) {
-        webHook = webHook.replace('$msg', encodeURIComponent(msg))
+        webHook = webHook.replace('{msg}', encodeURIComponent(msg))
         return axios.get(webHook)
     }
 }

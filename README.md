@@ -72,9 +72,11 @@ ALIYUN-DDNS
 docker run -d \
   --name=aliyun-ddns \
   --restart=always \
+  --network=host \
   -e accessKey=your_accessKey \
   -e accessKeySecret=your_accessKeySecret \
-  -e domain="sub.example.com,*.home.example.com" \ # 多个域名用英文逗号连接
-  --network=host
+  -e domain="sub.example.com,*.home.example.com" \
+  -e interval=300 \
+  -e webHook="https://webhook.example.com?text={msg}"
   lnkyan/aliyun-ddns
 ```

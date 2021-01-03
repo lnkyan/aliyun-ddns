@@ -3,5 +3,5 @@
 	"accessKeySecret": "AS",
 	"domain": "sub.example.com",
     "interval": "60",
-    "webHook": "https://webhook.example.com?text=$msg"
+    "webHook": "https://webhook.example.com?text={msg}"
 }
