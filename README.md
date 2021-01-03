@@ -5,28 +5,20 @@ ALIYUN-DDNS
 
 ## 说明
 
-主要功能就是如果本机的外网地址是动态的，定时获取外网地址，发现与 DNS 解析记录不一致时，调用阿里云的 DNS API，自动将域名的解析记录更新为本机最新的外网地址。
-
-比如，家里的电信宽带在路由器上拨号，获取到独立的公网 IP，家里的一台树莓派借助此公网 IP 与外界交互，但是路由器重启或者其他一些网络变更会导致公网 IP 变更，此时需要 DDNS 动态域名解析服务。
+主要功能是定时获取本机外网地址，发现与 DNS 解析记录不一致时，调用阿里云的 DNS API，自动将域名的解析记录更新为本机最新的外网地址。
 
 ## 功能
 
-* 自动监听本地公网 IP 变化，秒级更新 DNS 解析记录
-
+* 自动监听本地公网 IP 变化，更新 DNS 解析记录
 * 支持多个域名解析
-
 * 支持多级域名解析
-
-* 支持泛域名解析
-
 * 支持 Docker
+* 支持 WebHook
 
 ## 前提
 
 * 域名在阿里云解析
-
-* NodeJS/Docker
-
+* NodeJS/Docker环境
 * 部署机器有公网 IP
 
 ## 直接部署
@@ -43,27 +35,30 @@ ALIYUN-DDNS
 
 * 运行 `npm run start`（进程保活可以使用 `pm2`，如 `pm2 start index.js --name aliyun-ddns`）
 
-* 配置文件说明
+### 配置文件说明
 
   * accessKey、accessKeySecret: 阿里云 API 密钥
-
-  * Domain: 需 DDNS 的域名地址，多个域名使用逗号分隔即可，如
-
+  * domain: 需 DDNS 的域名地址，多个域名使用逗号分隔
+  * interval: 检测公网域名变化的时间间隔，以秒为单位，默认为300
+  * webHook: DNS 更新时的通知，可不填
+  
+  如
   ```json
   {
     "accessKey": "accessKey",
     "accessKeySecret": "accessKeySecret",
-    "domain": "example.com"
+    "domain": "example.com",
+    "interval": "300",
+    "webHook": "https://sc.ftqq.com/[SCKEY].send?text=主人DDNS更新了,${msg}"
   }
   ```
-
   或
-
   ```json
   {
     "accessKey": "accessKey",
     "accessKeySecret": "accessKeySecret",
-    "domain": "sub.example.com, *.home.example.com"
+    "domain": "sub.example.com, *.home.example.com",
+    "interval": "300"
   }
   ```
 

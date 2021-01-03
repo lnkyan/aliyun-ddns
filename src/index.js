@@ -7,67 +7,62 @@ const AliyunClient = require('./aliyun_api')
 
 /**
  * 加载配置
- * @return {{accessKeySecret: string, accessKey: string, domains: string[], interval: number}}
+ * @return {{accessKeySecret: string, accessKey: string, domains: string[], interval: number, webHook:string}}
  */
 function loadConfig() {
-    let accessKey
-    let accessKeySecret
-    let domain
-    let interval
+    let config
 
     if (isDocker()) {
-        accessKey = process.env.accessKey
-        accessKeySecret = process.env.accessKeySecret
-        domain = process.env.domain
-        interval = process.env.interval
+        config = {}
+        const keyNames = ['accessKey', 'accessKeySecret', 'domain', 'interval', 'webHook']
+        keyNames.forEach(key => {
+            config[key] = process.env[key]
+        })
     } else {
-        const config = require('../config.json')
-        accessKey = config.accessKey
-        accessKeySecret = config.accessKeySecret
-        domain = config.domain
-        interval = config.interval
+        config = require('../config.json')
     }
 
     return {
-        accessKey,
-        accessKeySecret,
-        domains: domain.split(',').map(item => item.trim()),
-        interval: parseInt(interval, 10),
+        accessKey: config.accessKey,
+        accessKeySecret: config.accessKeySecret,
+        domains: config.domain.split(',').map(item => item.trim()),
+        interval: parseInt(config.interval, 10) || 300,
+        webHook: config.webHook,
     }
 }
 
-async function checkDomains(aliClient, domains) {
+async function checkDomains(aliClient, domains, webHook) {
     const externalIp = await getExternalIp()
     console.log(getTime(), '当前公网 ip:', externalIp)
 
     for (const domain of domains) {
-        await checkDomain(aliClient, domain, externalIp)
+        await checkDomain(aliClient, domain, externalIp, webHook)
     }
 }
 
-async function checkDomain(aliClient, domain, externalIp) {
+async function checkDomain(aliClient, domain, externalIp, webHook) {
     const {subDomain, mainDomain} = parseDomain(domain)
     const domainRecords = await aliClient.getDomainRecords(subDomain, mainDomain)
 
     // 无记录 直接添加
     if (!domainRecords.length) {
-        console.log(getTime(), domain, '记录不存在，新增中 ...')
+        console.log(getTime(), domain, '记录不存在，新增中...')
         await aliClient.addRecord(subDomain, mainDomain, externalIp)
-        console.log(getTime(), domain, '新增成功, 当前 dns 指向: ', externalIp)
-        return null
+        console.log(getTime(), domain, '新增成功, 当前 dns 指向:', externalIp)
+        await notify(webHook, `域名${domain}已解析到${externalIp}`)
+        return
     }
 
     // 已有记录
-    for (const record of domainRecords) {
-        // 记录值存在
-        if (record.Value === externalIp) {
-            // 记录值一致
-            console.log(getTime(), domain, '记录一致, 无需修改')
-        } else {
-            // 记录值不一致
-            await aliClient.updateRecord(record.RecordId, subDomain, externalIp)
-            console.log(getTime(), domain, '更新成功, 当前 dns 指向: ', externalIp)
-        }
+    const needUpdateRecords = domainRecords.filter(item => item.Value !== externalIp)
+    if (!needUpdateRecords.length) {
+        console.log(getTime(), domain, '记录一致, 无需修改')
+    } else {
+        await Promise.all(needUpdateRecords.map(record => {
+            return aliClient.updateRecord(record.RecordId, subDomain, externalIp)
+        }))
+        console.log(getTime(), domain, '更新成功, 当前 dns 指向:', externalIp)
+        await notify(webHook, `域名${domain}已解析到${externalIp}`)
     }
 }
 
@@ -97,18 +92,25 @@ function getTime() {
     return new Date().toLocaleString()
 }
 
-function main() {
-    const {accessKey, accessKeySecret, domains, interval} = loadConfig()
-    const aliClient = new AliyunClient(accessKey, accessKeySecret)
+function notify(webHook, msg) {
+    if (webHook) {
+        webHook = webHook.replace('$msg', encodeURIComponent(msg))
+        return axios.get(webHook)
+    }
+}
 
-    checkDomains(aliClient, domains).catch(e => console.error(e))
+function main() {
+    const config = loadConfig()
+    const aliClient = new AliyunClient(config.accessKey, config.accessKeySecret)
+
+    checkDomains(aliClient, config.domains, config.webHook).catch(e => console.error(e))
     setInterval(async () => {
         try {
-            await checkDomains(aliClient, domains)
+            await checkDomains(aliClient, config.domains, config.webHook)
         } catch (e) {
             console.error(e)
         }
-    }, interval * 1000)
+    }, config.interval * 1000)
 }
 
 main()
