@@ -1,4 +1,4 @@
-FROM node:10.22.0-alpine3.9
+FROM node:10.21.0-buster-slim
 
 WORKDIR /home/mapp
 
