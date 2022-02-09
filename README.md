@@ -49,7 +49,7 @@ ALIYUN-DDNS
     "accessKeySecret": "accessKeySecret",
     "domain": "example.com",
     "interval": "300",
-    "webHook": "https://sc.ftqq.com/[SCKEY].send?text=主人DDNS更新了,${msg}"
+    "webHook": "https://sc.ftqq.com/[SCKEY].send?text=主人DDNS更新了,{msg}"
   }
   ```
   或
