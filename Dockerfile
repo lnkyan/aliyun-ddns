@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Install app dependencies
 COPY . .
-RUN npm ci --registry=https://registry.npm.taobao.org --only=production
+RUN npm ci --registry=https://registry.npm.taobao.org --omit-dev
 
 ENV accessKey=AK accessKeySecret=AS domain=sub.example.com interval=300 webHook="https://webhook.example.com?text={msg}"
 
