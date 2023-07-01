@@ -6,12 +6,13 @@
     "start": "node src/index.js",
     "build-docker": "docker build -t lnkyan/aliyun-ddns ."
   },
+  "type": "module",
   "author": "lnkyan",
   "license": "MIT",
   "dependencies": {
-    "@alicloud/pop-core": "^1.7.9",
-    "axios": "^0.21.1",
-    "is-docker": "^2.1.1"
+    "@alicloud/pop-core": "^1.7.13",
+    "is-docker": "^3.0.0",
+    "node-fetch": "^3.3.1"
   },
   "repository": {
     "type": "git",

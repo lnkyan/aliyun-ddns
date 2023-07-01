@@ -1,9 +1,9 @@
 /*
  * 借助阿里云 DNS 服务实现 DDNS（动态域名解析）
  */
-const Core = require('@alicloud/pop-core')
+import Core from '@alicloud/pop-core'
 
-module.exports = class AliyunClient {
+class AliyunClient {
     constructor(accessKeyId, accessKeySecret) {
         if (!accessKeyId || !accessKeySecret) {
             throw new Error(`Aliyun accessKeyId and accessKeySecret are required`)
@@ -72,3 +72,5 @@ module.exports = class AliyunClient {
         })
     }
 }
+
+export default AliyunClient

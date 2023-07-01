@@ -1,15 +1,15 @@
 /*
  * 借助阿里云 DNS 服务实现 DDNS（动态域名解析）
  */
-const axios = require('axios')
-const isDocker = require('is-docker')
-const AliyunClient = require('./aliyun_api')
+import isDocker from 'is-docker'
+import fetch from 'node-fetch'
+import AliyunClient from './aliyun_api.js'
 
 /**
  * 加载配置
  * @return {{accessKeySecret: string, accessKey: string, domains: string[], interval: number, webHook:string}}
  */
-function loadConfig() {
+async function loadConfig() {
     let config
 
     if (isDocker()) {
@@ -19,7 +19,7 @@ function loadConfig() {
             config[key] = process.env[key]
         })
     } else {
-        config = require('../config.json')
+        config = await import('../config.json')
     }
 
     return {
@@ -84,7 +84,8 @@ function parseDomain(domain) {
  * @return {Promise<string>}
  */
 async function getExternalIp() {
-    const {data} = await axios.get('https://jsonip.com')
+    const response = await fetch('https://jsonip.com')
+    const {data} = await response.json()
     return data.ip
 }
 
@@ -92,10 +93,11 @@ function getTime() {
     return new Date().toLocaleString()
 }
 
-function notify(webHook, msg) {
+async function notify(webHook, msg) {
     if (webHook) {
         webHook = webHook.replace('{msg}', encodeURIComponent(msg))
-        return axios.get(webHook)
+        const response = await fetch(webHook)
+        return response.text()
     }
 }
 
