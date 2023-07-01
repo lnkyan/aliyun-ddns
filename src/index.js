@@ -1,13 +1,14 @@
 /*
  * 借助阿里云 DNS 服务实现 DDNS（动态域名解析）
  */
+import {env} from 'node:process'
 import isDocker from 'is-docker'
 import fetch from 'node-fetch'
 import AliyunClient from './aliyun_api.js'
 
 /**
  * 加载配置
- * @return {{accessKeySecret: string, accessKey: string, domains: string[], interval: number, webHook:string}}
+ * @return {Promise<{accessKeySecret: string, accessKey: string, domains: string[], interval: number, webHook:string}>}
  */
 async function loadConfig() {
     let config
@@ -16,7 +17,7 @@ async function loadConfig() {
         config = {}
         const keyNames = ['accessKey', 'accessKeySecret', 'domain', 'interval', 'webHook']
         keyNames.forEach(key => {
-            config[key] = process.env[key]
+            config[key] = env[key]
         })
     } else {
         config = await import('../config.json')
@@ -25,7 +26,7 @@ async function loadConfig() {
     return {
         accessKey: config.accessKey,
         accessKeySecret: config.accessKeySecret,
-        domains: config.domain.split(',').map(item => item.trim()),
+        domains: config.domain?.split(',').map(item => item.trim()),
         interval: parseInt(config.interval, 10) || 300,
         webHook: config.webHook,
     }
@@ -85,7 +86,7 @@ function parseDomain(domain) {
  */
 async function getExternalIp() {
     const response = await fetch('https://jsonip.com')
-    const {data} = await response.json()
+    const data = await response.json()
     return data.ip
 }
 
@@ -101,8 +102,8 @@ async function notify(webHook, msg) {
     }
 }
 
-function main() {
-    const config = loadConfig()
+async function main() {
+    const config = await loadConfig()
     const aliClient = new AliyunClient(config.accessKey, config.accessKeySecret)
 
     checkDomains(aliClient, config.domains, config.webHook).catch(e => console.error(e))
@@ -115,4 +116,4 @@ function main() {
     }, config.interval * 1000)
 }
 
-main()
+await main()
