@@ -1,4 +1,12 @@
-config.json
+# Logs
+*.log
+npm-debug.log*
+
+# Dependency directories
 node_modules
 
+# IDE
 .idea
+.vscode
+
+config.json
