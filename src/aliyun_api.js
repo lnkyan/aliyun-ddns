@@ -36,17 +36,17 @@ class AliyunClient {
         const runtime = new Util.RuntimeOptions({});
         const res = await this.client.describeDomainRecordsWithOptions(request, runtime);
         return res.body.domainRecords.record.filter(item => item.RR === subDomain)
-        .map(item=>({
-            recordId:item.recordId,
-            domainName:item.domainName,
-            RR:item.RR,
-            value:item.value,
-            // TTL:item.TTL,
-            // weight:item.weight,
-            // remark:item.remark,
-            status:item.status,
-            // type:item.type,
-        }))
+            .map(item => ({
+                recordId: item.recordId,
+                domainName: item.domainName,
+                RR: item.RR,
+                value: item.value,
+                // TTL:item.TTL,
+                // weight:item.weight,
+                // remark:item.remark,
+                status: item.status,
+                // type:item.type,
+            }))
     }
 
     /**
@@ -64,8 +64,15 @@ class AliyunClient {
             value: ip,
         });
         const runtime = new Util.RuntimeOptions({});
-        const res = await this.client.addDomainRecordWithOptions(request, runtime);
-        return res.body.recordId
+        try {
+            const res = await this.client.addDomainRecordWithOptions(request, runtime);
+            return res.body.recordId
+        } catch (error) {
+            console.error(error);
+            // 诊断地址
+            console.log(error.data["Recommend"]);
+        }
+        return ''
     }
 
     /**
@@ -83,7 +90,13 @@ class AliyunClient {
             value: ip,
         });
         const runtime = new Util.RuntimeOptions({});
-        await this.client.updateDomainRecordWithOptions(request, runtime)
+        try {
+            await this.client.updateDomainRecordWithOptions(request, runtime)
+        } catch (error) {
+            console.error(error);
+            // 诊断地址
+            console.log(error.data["Recommend"]);
+        }
     }
 }
 

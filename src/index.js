@@ -42,7 +42,7 @@ async function checkDomain(aliClient, domain, externalIp, webHook) {
     }
 
     // 已有记录
-    const needUpdateRecords = domainRecords.filter(item => item.Value !== externalIp)
+    const needUpdateRecords = domainRecords.filter(item => item.value !== externalIp)
     if (!needUpdateRecords.length) {
         console.log(getTime(), domain, '记录一致, 无需修改')
     } else {
