@@ -35,7 +35,7 @@ class AliyunClient {
         });
         const runtime = new Util.RuntimeOptions({});
         const res = await this.client.describeDomainRecordsWithOptions(request, runtime);
-        return res.DomainRecords.Record.filter(item => item.RR === subDomain)
+        return res.body.domainRecords.record.filter(item => item.RR === subDomain)
     }
 
     /**
@@ -43,33 +43,33 @@ class AliyunClient {
      * @param {string} subDomain 子域名，如www或@
      * @param {string} mainDomain 主域名，如aliyun.com
      * @param {string} ip
-     * @return {Promise<{RecordId:string}>}
+     * @return {Promise<string>} RecordId
      */
     async addRecord(subDomain, mainDomain, ip) {
         const request = new Alidns20150109.AddDomainRecordRequest({
-            DomainName: mainDomain,
+            domainName: mainDomain,
             RR: subDomain,
-            Type: 'A',
-            Value: ip,
+            type: 'A',
+            value: ip,
         });
         const runtime = new Util.RuntimeOptions({});
         const res = await this.client.addDomainRecordWithOptions(request, runtime);
-        return res.RecordId
+        return res.body.recordId
     }
 
     /**
      * 更新域名解析记录
-     * @param {string} id
+     * @param {string} recordId
      * @param {string} subDomain 子域名，如www或@
      * @param {string} ip
-     * @return {Promise<{RecordId:string}>}
+     * @return {Promise}
      */
-    async updateRecord(id, subDomain, ip) {
+    async updateRecord(recordId, subDomain, ip) {
         const request = new Alidns20150109.UpdateDomainRecordRequest({
-            RecordId: id,
+            recordId,
             RR: subDomain,
-            Type: 'A',
-            Value: ip,
+            type: 'A',
+            value: ip,
         });
         const runtime = new Util.RuntimeOptions({});
         await this.client.updateDomainRecordWithOptions(request, runtime)
