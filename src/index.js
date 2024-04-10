@@ -1,8 +1,7 @@
 /*
  * 借助阿里云 DNS 服务实现 DDNS（动态域名解析）
  */
-import {env} from 'node:process'
-import isDocker from 'is-docker'
+import 'dotenv/config'
 import fetch from 'node-fetch'
 import AliyunClient from './aliyun_api.js'
 
@@ -11,24 +10,12 @@ import AliyunClient from './aliyun_api.js'
  * @return {Promise<{accessKeySecret: string, accessKey: string, domains: string[], interval: number, webHook:string}>}
  */
 async function loadConfig() {
-    let config
-
-    if (isDocker()) {
-        config = {}
-        const keyNames = ['accessKey', 'accessKeySecret', 'domain', 'interval', 'webHook']
-        keyNames.forEach(key => {
-            config[key] = env[key]
-        })
-    } else {
-        config = await import('../config.json')
-    }
-
     return {
-        accessKey: config.accessKey,
-        accessKeySecret: config.accessKeySecret,
-        domains: config.domain?.split(',').map(item => item.trim()),
-        interval: parseInt(config.interval, 10) || 300,
-        webHook: config.webHook,
+        accessKey: process.env.accessKey,
+        accessKeySecret: process.env.accessKeySecret,
+        domains: process.env.domain?.split(',').map(item => item.trim()),
+        interval: parseInt(process.env.interval, 10) || 300,
+        webHook: process.env.webHook,
     }
 }
 
@@ -42,7 +29,7 @@ async function checkDomains(aliClient, domains, webHook) {
 }
 
 async function checkDomain(aliClient, domain, externalIp, webHook) {
-    const {subDomain, mainDomain} = parseDomain(domain)
+    const { subDomain, mainDomain } = parseDomain(domain)
     const domainRecords = await aliClient.getDomainRecords(subDomain, mainDomain)
 
     // 无记录 直接添加

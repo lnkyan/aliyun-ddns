@@ -1,0 +1,54 @@
+# 工作流名称
+name: Build Docker Image
+
+# push tag 时触发执行
+on:
+  push:
+    tags:
+      - v*
+
+env:
+  # 环境变量，docker镜像名称
+  DOCKERHUB_REPO: lnkyan/aliyun-ddns
+
+jobs:
+  main:
+    # 在 Ubuntu 上运行
+    runs-on: ubuntu-latest
+    steps:
+      # git checkout 代码
+      - name: Checkout
+        uses: actions/checkout@v4
+      # 设置 Docker buildx, 方便构建 Multi platform 镜像
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      # 登录 docker hub
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          # GitHub Repo => Settings => Secrets 增加 docker hub 登录密钥信息
+          # DOCKERHUB_USERNAME 是 docker hub 账号名.
+          # DOCKERHUB_TOKEN: docker hub => Account Setting => Security 创建.
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # 通过 git 命令获取当前 tag 信息, 存入环境变量 APP_VERSION
+      - name: Generate App Version
+        run: echo APP_VERSION=`git describe --tags --always` >> $GITHUB_ENV
+      # 构建 Docker 并推送到 Docker hub
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v5
+        with:
+          # 是否 docker push
+          push: true
+          # 生成多平台镜像, see https://github.com/docker-library/bashbrew/blob/v0.1.1/architecture/oci-platform.go
+          # 必须是Node alpine版本支持的平台（不支持386）
+          platforms: |
+            linux/amd64
+            linux/arm64/v8
+          # 生成两个 docker tag: ${APP_VERSION} 和 latest
+          tags: |
+            ${{ env.DOCKERHUB_REPO }}:latest
+            ${{ env.DOCKERHUB_REPO }}:${{ env.APP_VERSION }}

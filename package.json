@@ -10,8 +10,10 @@
   "author": "lnkyan",
   "license": "MIT",
   "dependencies": {
-    "@alicloud/pop-core": "^1.7.13",
-    "is-docker": "^3.0.0",
+    "@alicloud/alidns20150109": "^3.1.0",
+    "@alicloud/openapi-client": "^0.4.8",
+    "@alicloud/tea-util": "^1.4.7",
+    "dotenv": "^16.4.5",
     "node-fetch": "^3.3.1"
   },
   "repository": {

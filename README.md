@@ -29,9 +29,9 @@ ALIYUN-DDNS
 
 * 安装依赖 `npm install`
 
-* 拷贝一份配置文件 `cp config.json.sample config.json`
+* 拷贝一份配置文件 `cp .env.sample .env`
 
-* 在 `config.json` 中填入相应字段
+* 在 `.env` 中填入相应字段
 
 * 运行 `npm run start`（进程保活可以使用 `pm2`，如 `pm2 start index.js --name aliyun-ddns`）
 
@@ -43,23 +43,19 @@ ALIYUN-DDNS
   * webHook: DNS 更新时的通知，可不填
   
   如
-  ```json
-  {
-    "accessKey": "accessKey",
-    "accessKeySecret": "accessKeySecret",
-    "domain": "example.com",
-    "interval": "300",
-    "webHook": "https://sctapi.ftqq.com/[SCKEY].send?title=主人DDNS更新了,{msg}"
-  }
+  ```ini
+  accessKey=AK
+  accessKeySecret=AS
+  domain=sub.example.com
+  interval=300
+  webHook=https://sctapi.ftqq.com/[SCKEY].send?title=主人DDNS更新了,{msg}
   ```
   或
-  ```json
-  {
-    "accessKey": "accessKey",
-    "accessKeySecret": "accessKeySecret",
-    "domain": "sub.example.com, *.home.example.com",
-    "interval": "300"
-  }
+  ```ini
+  accessKey=AK
+  accessKeySecret=AS
+  domain=sub.example.com, *.home.example.com
+  interval=300
   ```
 
 ## Docker 部署
@@ -80,3 +76,6 @@ docker run -d \
   -e webHook="https://webhook.example.com?text={msg}"
   lnkyan/aliyun-ddns
 ```
+
+## 开发
+修改后，push一个新的Tag（格式为v1.0.0），就会触发Actions构建并推送到DockerHub

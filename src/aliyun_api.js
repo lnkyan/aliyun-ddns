@@ -1,7 +1,10 @@
 /*
  * 借助阿里云 DNS 服务实现 DDNS（动态域名解析）
+ * @see https://api.aliyun.com/product/Alidns
  */
-import Core from '@alicloud/pop-core'
+import Alidns20150109 from '@alicloud/alidns20150109'
+import OpenApi from '@alicloud/openapi-client'
+import Util from '@alicloud/tea-util'
 
 class AliyunClient {
     constructor(accessKeyId, accessKeySecret) {
@@ -9,12 +12,12 @@ class AliyunClient {
             throw new Error(`Aliyun accessKeyId and accessKeySecret are required`)
         }
 
-        this.client = new Core({
+        const config = new OpenApi.Config({
             accessKeyId,
             accessKeySecret,
-            endpoint: 'https://alidns.aliyuncs.com',
-            apiVersion: '2015-01-09',
+            endpoint: 'alidns.cn-chengdu.aliyuncs.com',
         })
+        this.client = new Alidns20150109.default(config)
     }
 
     /**
@@ -24,14 +27,14 @@ class AliyunClient {
      * @return {Promise<[{RecordId:string, DomainName:string, RR:string, Value:string, TTL:string, Weight:string, Remark:string, Status:string, Type:string}]>}
      */
     async getDomainRecords(subDomain, mainDomain) {
-        const res = await this.client.request('DescribeDomainRecords', {
-            DomainName: mainDomain,
-            PageSize: 100,
+        const request = new Alidns20150109.DescribeDomainRecordsRequest({
+            domainName: mainDomain,
             RRKeyWord: subDomain,
-            TypeKeyWord: 'A',
-        }, {
-            method: 'POST',
-        })
+            pageSize: 100,
+            typeKeyWord: 'A',
+        });
+        const runtime = new Util.RuntimeOptions({});
+        const res = await this.client.describeDomainRecordsWithOptions(request, runtime);
         return res.DomainRecords.Record.filter(item => item.RR === subDomain)
     }
 
@@ -43,14 +46,14 @@ class AliyunClient {
      * @return {Promise<{RecordId:string}>}
      */
     async addRecord(subDomain, mainDomain, ip) {
-        const res = await this.client.request('AddDomainRecord', {
+        const request = new Alidns20150109.AddDomainRecordRequest({
             DomainName: mainDomain,
             RR: subDomain,
             Type: 'A',
             Value: ip,
-        }, {
-            method: 'POST',
-        })
+        });
+        const runtime = new Util.RuntimeOptions({});
+        const res = await this.client.addDomainRecordWithOptions(request, runtime);
         return res.RecordId
     }
 
@@ -62,14 +65,14 @@ class AliyunClient {
      * @return {Promise<{RecordId:string}>}
      */
     async updateRecord(id, subDomain, ip) {
-        await this.client.request('UpdateDomainRecord', {
+        const request = new Alidns20150109.UpdateDomainRecordRequest({
             RecordId: id,
             RR: subDomain,
             Type: 'A',
             Value: ip,
-        }, {
-            method: 'POST',
-        })
+        });
+        const runtime = new Util.RuntimeOptions({});
+        await this.client.updateDomainRecordWithOptions(request, runtime)
     }
 }
 
