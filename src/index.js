@@ -47,7 +47,7 @@ async function checkDomain(aliClient, domain, externalIp, webHook) {
         console.log(getTime(), domain, '记录一致, 无需修改')
     } else {
         await Promise.all(needUpdateRecords.map(record => {
-            return aliClient.updateRecord(record.RecordId, subDomain, externalIp)
+            return aliClient.updateRecord(record.recordId, subDomain, externalIp)
         }))
         console.log(getTime(), domain, '更新成功, 当前 dns 指向:', externalIp)
         await notify(webHook, `域名${domain}已解析到${externalIp}`)

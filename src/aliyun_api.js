@@ -24,7 +24,7 @@ class AliyunClient {
      * 获取域名解析记录
      * @param {string} subDomain 子域名，如www或@
      * @param {string} mainDomain 主域名，如aliyun.com
-     * @return {Promise<[{RecordId:string, DomainName:string, RR:string, Value:string, TTL:string, Weight:string, Remark:string, Status:string, Type:string}]>}
+     * @return {Promise<[{recordId:string, domainName:string, RR:string, value:string, status:string}]>}
      */
     async getDomainRecords(subDomain, mainDomain) {
         const request = new Alidns20150109.DescribeDomainRecordsRequest({
@@ -36,6 +36,17 @@ class AliyunClient {
         const runtime = new Util.RuntimeOptions({});
         const res = await this.client.describeDomainRecordsWithOptions(request, runtime);
         return res.body.domainRecords.record.filter(item => item.RR === subDomain)
+        .map(item=>({
+            recordId:item.recordId,
+            domainName:item.domainName,
+            RR:item.RR,
+            value:item.value,
+            // TTL:item.TTL,
+            // weight:item.weight,
+            // remark:item.remark,
+            status:item.status,
+            // type:item.type,
+        }))
     }
 
     /**
