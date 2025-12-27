@@ -3,7 +3,7 @@
  * @see https://api.aliyun.com/product/Alidns
  */
 import Alidns20150109 from '@alicloud/alidns20150109'
-import OpenApi from '@alicloud/openapi-client'
+import OpenApi from '@alicloud/openapi-core'
 import Util from '@alicloud/tea-util'
 
 class AliyunClient {
@@ -12,7 +12,7 @@ class AliyunClient {
             throw new Error(`Aliyun accessKeyId and accessKeySecret are required`)
         }
 
-        const config = new OpenApi.Config({
+        const config = new OpenApi.$OpenApiUtil.Config({
             accessKeyId,
             accessKeySecret,
             endpoint: 'alidns.cn-chengdu.aliyuncs.com',

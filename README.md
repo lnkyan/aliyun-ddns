@@ -13,7 +13,7 @@ ALIYUN-DDNS
 * 支持多个域名解析
 * 支持多级域名解析
 * 支持 Docker
-* 支持 WebHook
+* 支持 WebHook 通知
 
 ## 前提
 
@@ -48,13 +48,13 @@ ALIYUN-DDNS
   accessKeySecret=AS
   domain=sub.example.com
   interval=300
-  webHook=https://sctapi.ftqq.com/[SCKEY].send?title=主人DDNS更新了,{msg}
+  webHook=https://sctapi.ftqq.com/MY_SCKEY.send?title=主人DDNS更新了,{msg}
   ```
   或
   ```ini
   accessKey=AK
   accessKeySecret=AS
-  domain=sub.example.com, *.home.example.com
+  domain=sub.example.com,*.home.example.com
   interval=300
   ```
 

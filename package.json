@@ -1,20 +1,19 @@
 {
   "name": "aliyun-ddns",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node --env-file=.env src/index.js",
+    "start-for-docker": "node src/index.js",
     "build-docker": "docker build -t lnkyan/aliyun-ddns ."
   },
   "type": "module",
   "author": "lnkyan",
   "license": "MIT",
   "dependencies": {
-    "@alicloud/alidns20150109": "^3.1.0",
-    "@alicloud/openapi-client": "^0.4.8",
-    "@alicloud/tea-util": "^1.4.7",
-    "dotenv": "^16.4.5",
-    "node-fetch": "^3.3.1"
+    "@alicloud/alidns20150109": "^4.0.0",
+    "@alicloud/openapi-core": "^1.0.6",
+    "@alicloud/tea-util": "^1.4.11"
   },
   "repository": {
     "type": "git",
