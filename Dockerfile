@@ -9,4 +9,4 @@ RUN npm ci --omit-dev
 
 ENV accessKey=AK accessKeySecret=AS domain=sub.example.com interval=300 webHook="https://webhook.example.com?text={msg}"
 
-CMD ["npm", "start-for-docker"]
+CMD ["npm", "run start-for-docker"]
